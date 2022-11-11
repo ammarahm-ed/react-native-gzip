@@ -1,18 +1,26 @@
 import * as React from 'react';
+import { decode } from 'base64-arraybuffer';
+import { decompressSync, strFromU8 } from 'fflate';
+import { Button, StyleSheet, View } from 'react-native';
+import { deflate, inflate } from 'react-native-gzip';
+global.Buffer = require('buffer').Buffer;
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-gzip';
+export const decompress = (compressed: string) => {
+  return strFromU8(decompressSync(new Uint8Array(decode(compressed))));
+};
 
+const data = `hello world`;
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
-
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Button
+        title="Test Compression"
+        onPress={async () => {
+          const compressed = await deflate(data);
+          const decompressed = await inflate(compressed);
+          console.log(compressed, decompressed);
+        }}
+      />
     </View>
   );
 }

@@ -16,7 +16,15 @@ const Gzip = NativeModules.Gzip
         },
       }
     );
-
-export function multiply(a: number, b: number): Promise<number> {
-  return Gzip.multiply(a, b);
+/**
+ * Decompress data encoded as base64 string
+ */
+export function inflate(base64: string): Promise<string> {
+  return Gzip.inflate(base64);
+}
+/**
+ * Compress data to base64 encoded string
+ */
+export function deflate(data: string): Promise<string> {
+  return Gzip.deflate(data);
 }

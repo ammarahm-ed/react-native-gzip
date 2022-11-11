@@ -1,6 +1,6 @@
 # react-native-gzip
 
-Fast gzip for android & ios in React Native
+Fast gzip to compress strings for android & ios in React Native
 
 ## Installation
 
@@ -11,11 +11,10 @@ npm install react-native-gzip
 ## Usage
 
 ```js
-import { multiply } from 'react-native-gzip';
-
-// ...
-
-const result = await multiply(3, 7);
+import { deflate, inflate } from 'react-native-gzip';
+const data = `hello world`;
+const compressed = await deflate(data); // Returns a base64 string of compressed data
+const decompressed = await inflate(compressed); // Decompress the data to original string value
 ```
 
 ## Contributing
