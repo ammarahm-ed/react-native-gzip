@@ -7,19 +7,14 @@ import android.util.Base64;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import java.util.zip.Inflater;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
-
-import com.facebook.react.bridge.ReadableArray;
 
 @ReactModule(name = GzipModule.NAME)
 public class GzipModule extends ReactContextBaseJavaModule {
@@ -55,16 +50,16 @@ public class GzipModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void deflate(@NonNull final String data, @NonNull final Promise promise) {
     try {
-      promise.resolve(Base64.encodeToString(compress(data), Base64.NO_WRAP));
+      promise.resolve(Base64.encodeToString(compress(data, "UTF-8"), Base64.NO_WRAP));
     } catch (final Throwable ex) {
       promise.reject(ER_FAILURE, ex);
     }
   }
 
-  public static byte[] compress(String string) throws IOException {
+  public static byte[] compress(String string, String charset) throws IOException {
     ByteArrayOutputStream os = new ByteArrayOutputStream(string.length());
     GZIPOutputStream gos = new GZIPOutputStream(os);
-    gos.write(string.getBytes());
+    gos.write(string.getBytes(charset));
     gos.close();
     byte[] compressed = os.toByteArray();
     os.close();
@@ -75,15 +70,16 @@ public class GzipModule extends ReactContextBaseJavaModule {
     final int BUFFER_SIZE = 32;
     ByteArrayInputStream is = new ByteArrayInputStream(compressed);
     GZIPInputStream gis = new GZIPInputStream(is, BUFFER_SIZE);
-    StringBuilder string = new StringBuilder();
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
     byte[] data = new byte[BUFFER_SIZE];
     int bytesRead;
     while ((bytesRead = gis.read(data)) != -1) {
-      string.append(new String(data, 0, bytesRead));
+      os.write(data, 0, bytesRead);
     }
     gis.close();
     is.close();
-    return string.toString();
+    os.close();
+    return os.toString("UTF-8");
   }
 
 }
