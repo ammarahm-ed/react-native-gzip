@@ -7,6 +7,7 @@ import android.util.Base64;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -20,6 +21,7 @@ import com.facebook.react.module.annotations.ReactModule;
 public class GzipModule extends ReactContextBaseJavaModule {
   public static final String NAME = "Gzip";
   public static final String ER_FAILURE = "ERROR_FAILED";
+  private static final int BUFFER_SIZE = 1024;
 
   public GzipModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -50,16 +52,16 @@ public class GzipModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void deflate(@NonNull final String data, @NonNull final Promise promise) {
     try {
-      promise.resolve(Base64.encodeToString(compress(data, "UTF-8"), Base64.NO_WRAP));
+      promise.resolve(Base64.encodeToString(compress(data), Base64.NO_WRAP));
     } catch (final Throwable ex) {
       promise.reject(ER_FAILURE, ex);
     }
   }
 
-  public static byte[] compress(String string, String charset) throws IOException {
+  public static byte[] compress(String string) throws IOException {
     ByteArrayOutputStream os = new ByteArrayOutputStream(string.length());
     GZIPOutputStream gos = new GZIPOutputStream(os);
-    gos.write(string.getBytes(charset));
+    gos.write(string.getBytes(StandardCharsets.UTF_8));
     gos.close();
     byte[] compressed = os.toByteArray();
     os.close();
@@ -67,7 +69,6 @@ public class GzipModule extends ReactContextBaseJavaModule {
   }
 
   public static String decompress(byte[] compressed) throws IOException {
-    final int BUFFER_SIZE = 32;
     ByteArrayInputStream is = new ByteArrayInputStream(compressed);
     GZIPInputStream gis = new GZIPInputStream(is, BUFFER_SIZE);
     ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -79,7 +80,7 @@ public class GzipModule extends ReactContextBaseJavaModule {
     gis.close();
     is.close();
     os.close();
-    return os.toString("UTF-8");
+    return os.toString(StandardCharsets.UTF_8);
   }
 
 }
