@@ -2,6 +2,7 @@ package com.gzip;
 
 import androidx.annotation.NonNull;
 
+import android.os.Build;
 import android.util.Base64;
 
 import java.io.ByteArrayInputStream;
@@ -80,7 +81,11 @@ public class GzipModule extends ReactContextBaseJavaModule {
     gis.close();
     is.close();
     os.close();
-    return os.toString(StandardCharsets.UTF_8);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      return os.toString(StandardCharsets.UTF_8);
+    } else {
+      return os.toString("UTF-8");
+    }
   }
 
 }
