@@ -81,7 +81,7 @@ public class GzipModule extends ReactContextBaseJavaModule {
     gis.close();
     is.close();
     os.close();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       return os.toString(StandardCharsets.UTF_8);
     } else {
       return os.toString("UTF-8");
