@@ -20,8 +20,9 @@ import com.facebook.react.module.annotations.ReactModule;
 public class GzipModule extends ReactContextBaseJavaModule {
   public static final String NAME = "Gzip";
   public static final String ER_FAILURE = "ERROR_FAILED";
-  private static final int BUFFER_SIZE = 1024;
-  private static final String CHARSET_NAME = "UTF-8";
+  
+  // Default BUFFER_SIZE for GZIPInputStream is 512
+  private static final int GZIP_DEFAULT_BUFFER_SIZE = 512;
 
   public GzipModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -61,7 +62,7 @@ public class GzipModule extends ReactContextBaseJavaModule {
   public static byte[] compress(String string) throws IOException {
     ByteArrayOutputStream os = new ByteArrayOutputStream(string.length());
     GZIPOutputStream gos = new GZIPOutputStream(os);
-    gos.write(string.getBytes(CHARSET_NAME));
+    gos.write(string.getBytes());
     gos.close();
     byte[] compressed = os.toByteArray();
     os.close();
@@ -70,9 +71,9 @@ public class GzipModule extends ReactContextBaseJavaModule {
 
   public static String decompress(byte[] compressed) throws IOException {
     ByteArrayInputStream is = new ByteArrayInputStream(compressed);
-    GZIPInputStream gis = new GZIPInputStream(is, BUFFER_SIZE);
+    GZIPInputStream gis = new GZIPInputStream(is);
     ByteArrayOutputStream os = new ByteArrayOutputStream();
-    byte[] data = new byte[BUFFER_SIZE];
+    byte[] data = new byte[GZIP_DEFAULT_BUFFER_SIZE];
     int bytesRead;
     while ((bytesRead = gis.read(data)) != -1) {
       os.write(data, 0, bytesRead);
@@ -80,7 +81,7 @@ public class GzipModule extends ReactContextBaseJavaModule {
     gis.close();
     is.close();
     os.close();
-    return os.toString(CHARSET_NAME);
+    return os.toString();
   }
 
 }
