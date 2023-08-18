@@ -2,13 +2,11 @@ package com.gzip;
 
 import androidx.annotation.NonNull;
 
-import android.os.Build;
 import android.util.Base64;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -23,6 +21,7 @@ public class GzipModule extends ReactContextBaseJavaModule {
   public static final String NAME = "Gzip";
   public static final String ER_FAILURE = "ERROR_FAILED";
   private static final int BUFFER_SIZE = 1024;
+  private static final String CHARSET_NAME = "UTF-8";
 
   public GzipModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -62,7 +61,7 @@ public class GzipModule extends ReactContextBaseJavaModule {
   public static byte[] compress(String string) throws IOException {
     ByteArrayOutputStream os = new ByteArrayOutputStream(string.length());
     GZIPOutputStream gos = new GZIPOutputStream(os);
-    gos.write(string.getBytes(StandardCharsets.UTF_8));
+    gos.write(string.getBytes(CHARSET_NAME));
     gos.close();
     byte[] compressed = os.toByteArray();
     os.close();
@@ -81,7 +80,7 @@ public class GzipModule extends ReactContextBaseJavaModule {
     gis.close();
     is.close();
     os.close();
-    return os.toString(StandardCharsets.UTF_8);
+    return os.toString(CHARSET_NAME);
   }
 
 }
