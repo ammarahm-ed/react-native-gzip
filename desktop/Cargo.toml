@@ -1,0 +1,12 @@
+[package]
+name = "rn-gpui-gzip"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rn-gpui-module = { version = "0.1" }
+flate2 = "1"
+base64 = "0.22"
+
+[build-dependencies]
+rn-gpui-module-build = { version = "0.1" }
