@@ -1,6 +1,6 @@
 {
   "name": "react-native-gzip",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Fast gzip to compress strings for android & ios in React Native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
